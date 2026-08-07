@@ -3,10 +3,21 @@ FROM python:3.11-slim
 WORKDIR /app
 
 # Install system dependencies
+# pkg-config + libavformat/libavcodec/... dev headers لازمين عشان مكتبة
+# av (اللي بيعتمد عليها faster-whisper) تتبني من المصدر
 RUN apt-get update && apt-get install -y \
     ffmpeg \
     espeak \
     libespeak1 \
+    pkg-config \
+    libavformat-dev \
+    libavcodec-dev \
+    libavdevice-dev \
+    libavutil-dev \
+    libavfilter-dev \
+    libswscale-dev \
+    libswresample-dev \
+    build-essential \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Python dependencies
