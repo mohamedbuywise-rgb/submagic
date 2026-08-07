@@ -19,5 +19,8 @@ RUN python -c "from faster_whisper import WhisperModel; WhisperModel('tiny', dev
 # Copy worker code
 COPY worker.py .
 
+# Render بيحط قيمة PORT تلقائي، بس بنعرّف Default هنا للتوثيق فقط
+EXPOSE 10000
+
 # Start worker
 CMD ["python", "worker.py"]

@@ -7,6 +7,8 @@ import json
 import time
 import subprocess
 import tempfile
+import threading
+from http.server import BaseHTTPRequestHandler, HTTPServer
 import requests
 from redis import Redis
 from faster_whisper import WhisperModel
@@ -22,6 +24,30 @@ supabase = create_client(
     os.getenv('SUPABASE_KEY')
 )
 BUCKET_NAME = 'clipgenie-uploads'  # لازم تعمل الـ bucket ده في Supabase Storage وتخليه Public
+
+
+# ═══════════════════════════════════════════════════════════
+# HEALTH SERVER (Render Free Web Service محتاج يرد على HTTP عشان
+# مايعتبرش الخدمة ميتة. ده مش جزء من منطق الـ worker الحقيقي،
+# هو بس بيفتح بورت ويرد "OK" عشان Render يبقى مبسوط)
+# ═══════════════════════════════════════════════════════════
+
+class _HealthHandler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        self.send_response(200)
+        self.send_header('Content-Type', 'text/plain')
+        self.end_headers()
+        self.wfile.write(b'ClipGenie worker is running')
+
+    def log_message(self, format, *args):
+        pass  # يمنع الـ logs الزيادة بتاعة كل health check
+
+
+def start_health_server():
+    port = int(os.getenv('PORT', 10000))
+    server = HTTPServer(('0.0.0.0', port), _HealthHandler)
+    print(f"[Health Server] Listening on port {port}")
+    server.serve_forever()
 
 
 def upload_to_supabase(local_path, remote_name=None, content_type=None):
@@ -417,4 +443,8 @@ def main():
                 redis_client.setex(f"clipgenie:result:{job['id']}", 3600, json.dumps({'error': str(e)}))
 
 if __name__ == '__main__':
+    # هنا health server بيشتغل في thread منفصل (background) عشان يرضي
+    # Render، وفي نفس الوقت main() فاضل شغال عادي بيسمع على Redis queue
+    health_thread = threading.Thread(target=start_health_server, daemon=True)
+    health_thread.start()
     main()
