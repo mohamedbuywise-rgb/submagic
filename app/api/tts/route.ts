@@ -1,8 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { enqueueJob } from '@/lib/queue'
+import { requireUserWithCredits, deductCredits, recordJob } from '@/lib/authGuard'
 
 export async function POST(req: NextRequest) {
   try {
+    const guard = await requireUserWithCredits(req, 'credits_minutes')
+    if ('reject' in guard) return guard.reject
+
     const formData = await req.formData()
     const text = formData.get('text') as string
     const language = (formData.get('language') as string) || 'ar'
@@ -15,6 +19,9 @@ export async function POST(req: NextRequest) {
 
     // TTS مش محتاج رفع ملف، بس نص. الـ worker هيحفظ الناتج في /tmp/{jobId}.mp3
     // ثم يرفعه على Supabase Storage تلقائي زي أي job تاني.
+    await recordJob({ id: jobId, userId: guard.userId, tool: 'tts', fileName: null })
+    await deductCredits(guard.userId, 'credits_minutes')
+
     await enqueueJob({
       id: jobId,
       type: 'tts',

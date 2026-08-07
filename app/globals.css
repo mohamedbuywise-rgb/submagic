@@ -2,63 +2,162 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Arabic:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&family=Cairo:wght@600;700;800&family=Noto+Sans+Arabic:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap');
 
 :root {
-  --bg: #faf8f5;
-  --surface: #ffffff;
-  --accent: #f97316;
-  --accent-soft: #fed7aa;
-  --accent-wash: #fff7ed;
-  --accent-dark: #ea580c;
-  --text: #292524;
-  --muted: #78716c;
-  --border: #e7e5e4;
+  --ink: #fbf5ea;
+  --ink-soft: #ffffff;
+  --panel: #ffffff;
+  --panel-raised: #fdf1e0;
+  --line: #f0e2cc;
+  --gold: #f0801e;
+  --gold-dim: #d66c10;
+  --gold-wash: rgba(240, 128, 30, 0.10);
+  --teal: #22b8a6;
+  --teal-wash: rgba(34, 184, 166, 0.10);
+  --danger: #e2604f;
+  --danger-wash: rgba(226, 96, 79, 0.10);
+  --text-hi: #241a10;
+  --text-lo: #8a7a64;
+}
+
+* {
+  border-color: var(--line);
+}
+
+html {
+  color-scheme: light;
 }
 
 body {
-  background: var(--bg);
-  color: var(--text);
+  background: var(--ink);
+  color: var(--text-hi);
   font-family: 'Inter', 'Noto Sans Arabic', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 
-/* Arabic reads noticeably better on Noto Sans Arabic than falling back
-   through a Latin font stack, so flip the priority whenever the page is RTL. */
 [dir='rtl'] body {
   font-family: 'Noto Sans Arabic', 'Inter', system-ui, sans-serif;
 }
 
+.font-display {
+  font-family: 'Space Grotesk', 'Cairo', system-ui, sans-serif;
+}
+[dir='rtl'] .font-display {
+  font-family: 'Cairo', 'Space Grotesk', system-ui, sans-serif;
+}
+
+.font-mono-num {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-variant-numeric: tabular-nums;
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+
+/* Subtle cinematic vignette + grain, kept very quiet on purpose */
+.scene {
+  position: relative;
+  background:
+    radial-gradient(ellipse 900px 500px at 15% -10%, rgba(240, 128, 30, 0.08), transparent 60%),
+    radial-gradient(ellipse 900px 500px at 100% 10%, rgba(34, 184, 166, 0.06), transparent 60%),
+    var(--ink);
+}
+.scene::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.035;
+  z-index: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Sprocket-hole rule — a quiet nod to a filmstrip edge, used as a divider */
+.sprocket-rule {
+  background-image: radial-gradient(circle, var(--line) 1.5px, transparent 1.5px);
+  background-size: 14px 100%;
+  background-position: center;
+  height: 1px;
+}
+
+/* Viewfinder corner brackets on the drop zone — the page's signature element */
+.viewfinder {
+  position: relative;
+}
+.viewfinder::before,
+.viewfinder::after,
+.viewfinder .vf-tl,
+.viewfinder .vf-tr,
+.viewfinder .vf-bl,
+.viewfinder .vf-br {
+  content: '';
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  border: 2px solid var(--gold-dim);
+  opacity: 0.7;
+  transition: opacity 0.2s ease, border-color 0.2s ease;
+}
+.viewfinder .vf-tl { top: 14px; left: 14px; border-right: none; border-bottom: none; border-radius: 6px 0 0 0; }
+.viewfinder .vf-tr { top: 14px; right: 14px; border-left: none; border-bottom: none; border-radius: 0 6px 0 0; }
+.viewfinder .vf-bl { bottom: 14px; left: 14px; border-right: none; border-top: none; border-radius: 0 0 0 6px; }
+.viewfinder .vf-br { bottom: 14px; right: 14px; border-left: none; border-top: none; border-radius: 0 0 6px 0; }
+.viewfinder.is-active .vf-tl,
+.viewfinder.is-active .vf-tr,
+.viewfinder.is-active .vf-bl,
+.viewfinder.is-active .vf-br {
+  border-color: var(--gold);
+  opacity: 1;
+}
+
+@keyframes rec-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+.rec-dot {
+  animation: rec-pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes scrub {
+  0% { transform: translateX(-40%); }
+  100% { transform: translateX(140%); }
+}
+.scrub-bar {
+  animation: scrub 1.6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
 @keyframes float {
   0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-8px); }
+  50% { transform: translateY(-6px); }
 }
-
 .animate-float {
-  animation: float 3s ease-in-out infinite;
+  animation: float 3.4s ease-in-out infinite;
 }
 
-@keyframes blob {
-  0%, 100% { border-radius: 60% 40% 50% 50%; }
-  33% { border-radius: 50% 60% 40% 50%; }
-  66% { border-radius: 40% 50% 60% 40%; }
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-up {
+  animation: fade-up 0.35s ease-out both;
 }
 
-.animate-blob {
-  animation: blob 8s ease-in-out infinite;
+@media (prefers-reduced-motion: reduce) {
+  .animate-float, .rec-dot, .scrub-bar, .animate-fade-up {
+    animation: none !important;
+  }
 }
 
-/* Organic scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
-}
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-::-webkit-scrollbar-thumb {
-  background: #d6d3d1;
-  border-radius: 10px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: #a8a29e;
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #e4d6c0; border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: #d8c6a8; }
+
+/* Hide native scrollbar for the tool filmstrip while keeping it scrollable */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
 }

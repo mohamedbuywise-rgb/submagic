@@ -53,6 +53,8 @@ git push -u origin main
 |------|-------|----------------|
 | `NEXT_PUBLIC_SUPABASE_URL` | `https://xxxx.supabase.co` | Supabase Dashboard → Settings → API |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | `eyJ...` | Supabase Dashboard → Settings → API |
+| `SUPABASE_SERVICE_ROLE_KEY` | `eyJ...` (service_role secret) | Supabase Dashboard → Settings → API — **needed on Vercel too**, not just the Worker, because the API routes check login + credits server-side |
+| `REDIS_URL` | `rediss://default:PASSWORD@...` | Same Redis instance the Worker uses (see Part 5) |
 | `RESEND_API_KEY` | `re_...` | Resend Dashboard → API Keys |
 
 5. Click **Save**

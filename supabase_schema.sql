@@ -75,6 +75,20 @@ CREATE TRIGGER update_profiles_updated_at
   BEFORE UPDATE ON public.profiles
   FOR EACH ROW EXECUTE FUNCTION update_updated_at();
 
--- Insert default data (optional)
--- INSERT INTO public.profiles (id, email, plan, credits_minutes, credits_images)
--- VALUES ('your-user-id', 'your@email.com', 'free', 10, 5);
+-- Auto-create a profile row (with free-tier credits) the moment someone
+-- signs up in Supabase Auth — this is what makes "credits" and "recent
+-- files" real per-account instead of hardcoded numbers on the frontend.
+CREATE OR REPLACE FUNCTION public.handle_new_user()
+RETURNS TRIGGER AS $$
+BEGIN
+  INSERT INTO public.profiles (id, email, full_name)
+  VALUES (NEW.id, NEW.email, NEW.raw_user_meta_data->>'full_name')
+  ON CONFLICT (id) DO NOTHING;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
+CREATE TRIGGER on_auth_user_created
+  AFTER INSERT ON auth.users
+  FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();

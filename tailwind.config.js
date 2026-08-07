@@ -8,26 +8,34 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        cream: '#faf8f5',
-        surface: '#ffffff',
-        accent: '#f97316',
-        'accent-soft': '#fed7aa',
-        'accent-wash': '#fff7ed',
-        'accent-dark': '#ea580c',
-        stone: {
-          850: '#292524',
-          750: '#78716c',
-          650: '#e7e5e4',
-        }
+        ink: '#fbf5ea',
+        'ink-soft': '#ffffff',
+        panel: '#ffffff',
+        'panel-raised': '#fdf1e0',
+        line: '#f0e2cc',
+        gold: '#f0801e',
+        'gold-dim': '#d66c10',
+        'gold-wash': 'rgba(240,128,30,0.10)',
+        teal: '#22b8a6',
+        'teal-wash': 'rgba(34,184,166,0.10)',
+        danger: '#e2604f',
+        'danger-wash': 'rgba(226,96,79,0.10)',
+        'text-hi': '#241a10',
+        'text-lo': '#8a7a64',
       },
       fontFamily: {
         sans: ['Inter', 'Noto Sans Arabic', 'system-ui', 'sans-serif'],
+        display: ['Space Grotesk', 'Cairo', 'system-ui', 'sans-serif'],
+        mono: ['JetBrains Mono', 'ui-monospace', 'monospace'],
       },
       borderRadius: {
-        'organic': '20px 24px 22px 26px',
-        'organic-sm': '14px 18px 16px 20px',
-        'organic-lg': '30px 40px 35px 45px',
-      }
+        card: '18px',
+        pill: '999px',
+      },
+      boxShadow: {
+        gold: '0 8px 30px -8px rgba(231,163,62,0.45)',
+        panel: '0 1px 0 0 rgba(255,255,255,0.03) inset',
+      },
     },
   },
   plugins: [],

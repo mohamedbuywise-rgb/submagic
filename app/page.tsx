@@ -8,22 +8,22 @@ export default function Home() {
   const { t, brand } = useLanguage()
 
   return (
-    <main className="min-h-screen bg-cream overflow-x-hidden">
+    <main className="min-h-screen scene overflow-x-hidden">
       {/* NAV */}
-      <nav className="flex justify-between items-center px-6 py-4 max-w-5xl mx-auto gap-4">
-        <Link href="/" className="flex items-center gap-2 font-extrabold text-lg text-stone-850 shrink-0">
-          <span className="text-xl">🪄</span> {brand}
+      <nav className="relative z-10 flex justify-between items-center px-5 sm:px-6 py-4 max-w-5xl mx-auto gap-3">
+        <Link href="/" className="flex items-center gap-2 font-display font-bold text-lg text-text-hi shrink-0">
+          <span className="text-xl" aria-hidden="true">🪄</span> {brand}
         </Link>
-        <div className="hidden md:flex gap-7 text-sm text-stone-750">
-          <Link href="#pricing" className="hover:text-accent transition-colors">{t.nav.pricing}</Link>
-          <Link href="#features" className="hover:text-accent transition-colors">{t.nav.features}</Link>
-          <Link href="/dashboard" className="hover:text-accent transition-colors">{t.nav.dashboard}</Link>
+        <div className="hidden md:flex gap-7 text-sm text-text-lo">
+          <Link href="#pricing" className="hover:text-gold transition-colors">{t.nav.pricing}</Link>
+          <Link href="#features" className="hover:text-gold transition-colors">{t.nav.features}</Link>
+          <Link href="/dashboard" className="hover:text-gold transition-colors">{t.nav.dashboard}</Link>
         </div>
-        <div className="flex items-center gap-3">
-          <LanguageToggle className="hidden sm:flex" />
+        <div className="flex items-center gap-2.5">
+          <LanguageToggle />
           <Link
             href="/dashboard"
-            className="bg-accent text-white px-5 py-2 rounded-organic-sm text-sm font-semibold hover:bg-accent-dark transition-colors shadow-lg shadow-accent/20 whitespace-nowrap"
+            className="bg-gradient-to-b from-gold to-gold-dim text-white px-4 sm:px-5 py-2 rounded-pill text-sm font-bold hover:shadow-gold transition-shadow whitespace-nowrap"
           >
             {t.nav.getStarted}
           </Link>
@@ -31,44 +31,37 @@ export default function Home() {
       </nav>
 
       {/* HERO */}
-      <section className="relative px-6 pt-16 pb-24 text-center">
-        {/* Organic blobs */}
-        <div className="absolute top-[-40px] right-[-60px] w-[280px] h-[280px] bg-gradient-radial from-accent-soft to-transparent rounded-[60%_40%_50%_50%] opacity-60 animate-blob pointer-events-none" />
-        <div className="absolute bottom-[-30px] left-[-40px] w-[220px] h-[220px] bg-gradient-radial from-yellow-200 to-transparent rounded-[50%_50%_40%_60%] opacity-40 animate-blob pointer-events-none" style={{animationDelay: '2s'}} />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-gradient-radial from-accent-wash to-transparent rounded-[45%_55%_55%_45%] pointer-events-none" />
-
-        <div className="relative z-10 max-w-2xl mx-auto">
-          {/* Logo mark */}
-          <div className="w-[90px] h-[90px] mx-auto mb-6 bg-gradient-to-br from-accent to-yellow-400 rounded-[28px_40px_32px_36px] flex items-center justify-center text-4xl shadow-xl shadow-accent/25 -rotate-3">
+      <section className="relative z-10 px-5 sm:px-6 pt-14 sm:pt-20 pb-20 text-center">
+        <div className="relative max-w-2xl mx-auto">
+          {/* Logo mark — clapperboard slate, ties directly to the product */}
+          <div className="w-16 h-16 mx-auto mb-7 bg-panel border border-line rounded-2xl flex items-center justify-center text-3xl shadow-panel">
             🪄
           </div>
 
-          <div className="sm:hidden mb-6 flex justify-center">
-            <LanguageToggle />
+          <div className="inline-flex items-center gap-2 mb-5 px-3 py-1 rounded-pill border border-line bg-panel/60 text-text-lo text-xs font-mono-num tracking-wide">
+            <span className="w-1.5 h-1.5 rounded-full bg-teal" />
+            {t.hero.subtitle.length > 0 ? brand.toUpperCase() : ''} · AI TOOLKIT
           </div>
 
-          <h1 className="text-4xl md:text-5xl font-extrabold text-stone-850 leading-tight tracking-tight mb-4">
+          <h1 className="font-display text-4xl md:text-6xl font-bold text-text-hi leading-[1.08] tracking-tight mb-5">
             {t.hero.title1}<br />
-            {t.hero.titleAnd} <span className="text-accent relative inline-block">
-              {t.hero.titleAccent}
-              <span className="absolute bottom-1 left-0 right-0 h-2 bg-gradient-to-r from-accent-soft to-yellow-200 rounded-full -z-10 opacity-70" />
-            </span>
+            {t.hero.titleAnd} <span className="text-gold">{t.hero.titleAccent}</span>
           </h1>
 
-          <p className="text-stone-750 text-lg max-w-md mx-auto mb-8 leading-relaxed">
+          <p className="text-text-lo text-base md:text-lg max-w-md mx-auto mb-9 leading-relaxed">
             {t.hero.subtitle}
           </p>
 
-          <div className="flex gap-4 justify-center flex-wrap">
+          <div className="flex gap-3 justify-center flex-wrap">
             <Link
               href="/dashboard"
-              className="bg-gradient-to-br from-accent to-accent-dark text-white px-7 py-3 rounded-organic-sm font-semibold text-sm hover:shadow-xl hover:shadow-accent/30 transition-all hover:-translate-y-0.5"
+              className="bg-gradient-to-b from-gold to-gold-dim text-white px-6 py-3 rounded-pill font-bold text-sm hover:shadow-gold transition-shadow"
             >
               {t.hero.ctaSubtitles}
             </Link>
             <Link
               href="/dashboard"
-              className="bg-white text-accent border-2 border-accent-soft px-7 py-3 rounded-organic-sm font-semibold text-sm hover:bg-accent-wash transition-all hover:-translate-y-0.5"
+              className="bg-panel text-text-hi border border-line px-6 py-3 rounded-pill font-semibold text-sm hover:border-teal hover:text-teal transition-colors"
             >
               {t.hero.ctaBackgrounds}
             </Link>
@@ -76,29 +69,31 @@ export default function Home() {
         </div>
       </section>
 
-      {/* FEATURES — Scattered, no cards */}
-      <section id="features" className="px-6 py-20 max-w-2xl mx-auto">
-        <div className="text-center mb-14">
-          <h2 className="text-2xl md:text-3xl font-bold text-stone-850 mb-2">{t.features.heading}</h2>
-          <p className="text-stone-750 text-sm">{t.features.sub}</p>
+      <div className="sprocket-rule max-w-5xl mx-auto" />
+
+      {/* FEATURES */}
+      <section id="features" className="relative z-10 px-5 sm:px-6 py-16 sm:py-20 max-w-3xl mx-auto">
+        <div className="mb-12 max-w-md">
+          <h2 className="font-display text-2xl md:text-3xl font-bold text-text-hi mb-2">{t.features.heading}</h2>
+          <p className="text-text-lo text-sm">{t.features.sub}</p>
         </div>
 
-        <div className="flex flex-col gap-8">
+        <div className="grid sm:grid-cols-3 gap-4">
           {[
-            { emoji: '🎬', bg: 'from-accent-soft to-orange-100', rotate: '-rotate-[5deg]', offset: 'rtl:ml-0 rtl:mr-12 mr-0 md:mr-12 rtl:md:mr-0 rtl:md:ml-12' },
-            { emoji: '🖼️', bg: 'from-yellow-200 to-yellow-100', rotate: 'rotate-[3deg]', offset: 'ml-0 md:ml-12 rtl:md:ml-0 rtl:md:mr-12' },
-            { emoji: '⚡', bg: 'from-green-200 to-green-100', rotate: '-rotate-[2deg]', offset: 'mr-0 md:mr-8 rtl:md:mr-0 rtl:md:ml-8' },
+            { emoji: '🎬', tint: 'text-gold', wash: 'bg-gold-wash' },
+            { emoji: '🖼️', tint: 'text-teal', wash: 'bg-teal-wash' },
+            { emoji: '⚡', tint: 'text-gold', wash: 'bg-gold-wash' },
           ].map((style, i) => (
             <div
               key={i}
-              className={`flex gap-5 items-start p-6 bg-white/70 backdrop-blur-sm rounded-organic border border-stone-650/50 hover:-translate-y-1 transition-transform ${style.offset}`}
+              className="flex sm:flex-col gap-4 items-start p-5 bg-panel/60 border border-line rounded-card hover:border-gold-dim transition-colors"
             >
-              <div className={`w-[50px] h-[50px] bg-gradient-to-br ${style.bg} rounded-[16px_20px_18px_22px] flex items-center justify-center text-2xl shrink-0 ${style.rotate}`}>
+              <div className={`w-11 h-11 shrink-0 ${style.wash} rounded-xl flex items-center justify-center text-xl`}>
                 {style.emoji}
               </div>
               <div>
-                <h4 className="font-bold text-stone-850 mb-1">{t.features.items[i].title}</h4>
-                <p className="text-stone-750 text-sm leading-relaxed">
+                <h4 className={`font-display font-semibold text-text-hi mb-1`}>{t.features.items[i].title}</h4>
+                <p className="text-text-lo text-sm leading-relaxed">
                   {t.features.items[i].desc}
                 </p>
               </div>
@@ -107,39 +102,37 @@ export default function Home() {
         </div>
       </section>
 
-      {/* UPLOAD PREVIEW */}
-      <section className="px-6 py-16 max-w-xl mx-auto">
-        <div className="text-center mb-10">
-          <h2 className="text-2xl font-bold text-stone-850 mb-2">{t.upload.heading}</h2>
-          <p className="text-stone-750 text-sm">{t.upload.sub}</p>
+      {/* UPLOAD PREVIEW — echoes the real drop zone in the dashboard */}
+      <section className="relative z-10 px-5 sm:px-6 py-16 max-w-xl mx-auto">
+        <div className="mb-8">
+          <h2 className="font-display text-2xl font-bold text-text-hi mb-2">{t.upload.heading}</h2>
+          <p className="text-text-lo text-sm">{t.upload.sub}</p>
         </div>
 
-        <div className="relative bg-gradient-to-br from-accent-wash to-orange-100 border-2 border-dashed border-accent-soft rounded-organic-lg p-12 text-center">
-          <div className="absolute -top-3 right-8 rtl:right-auto rtl:left-8 w-16 h-16 bg-[radial-gradient(circle,#fbbf24_2px,transparent_2px)] bg-[length:12px_12px] opacity-50 rounded-full" />
-          <div className="text-5xl mb-4 animate-float inline-block">📤</div>
-          <h4 className="font-bold text-stone-850 mb-1">{t.upload.dropTitle}</h4>
-          <p className="text-stone-750 text-sm">
+        <Link href="/dashboard" className="viewfinder block bg-panel border border-line rounded-card p-10 sm:p-12 text-center hover:border-gold-dim transition-colors">
+          <span className="vf-tl" /><span className="vf-tr" /><span className="vf-bl" /><span className="vf-br" />
+          <div className="text-4xl mb-4 animate-float inline-block">📤</div>
+          <h4 className="font-semibold text-text-hi mb-1">{t.upload.dropTitle}</h4>
+          <p className="text-text-lo text-sm">
             {t.upload.videoOrImage}<br />
             {t.upload.upTo} 500MB
           </p>
-        </div>
+        </Link>
 
-        {/* File list preview */}
-        <div className="mt-8 space-y-0">
+        <div className="mt-8">
           {[
-            { emoji: '🎬', file: t.sampleFiles.f1, status: 'Done' as const, statusColor: 'bg-green-100 text-green-800' },
-            { emoji: '🖼️', file: t.sampleFiles.f2, status: 'Processing' as const, statusColor: 'bg-orange-100 text-orange-800' },
-            { emoji: '🎬', file: t.sampleFiles.f3, status: 'Done' as const, statusColor: 'bg-green-100 text-green-800' },
+            { emoji: '🎬', file: t.sampleFiles.f1, status: 'Done' as const, bar: 'bg-teal' },
+            { emoji: '🖼️', file: t.sampleFiles.f2, status: 'Processing' as const, bar: 'bg-gold' },
+            { emoji: '🎬', file: t.sampleFiles.f3, status: 'Done' as const, bar: 'bg-teal' },
           ].map((row, i) => (
-            <div key={i} className="flex items-center justify-between py-3.5 border-b border-stone-650/50 hover:px-2 transition-all">
-              <div className="flex items-center gap-3">
-                <span className="text-xl">{row.emoji}</span>
-                <div>
-                  <div className="font-medium text-sm text-stone-850">{row.file.name}</div>
-                  <div className="text-xs text-stone-750">{row.file.meta}</div>
-                </div>
+            <div key={i} className="flex items-center gap-3 py-3 border-b border-line last:border-0">
+              <span className={`w-1 self-stretch rounded-full ${row.bar}`} />
+              <span className="text-lg">{row.emoji}</span>
+              <div className="flex-1 min-w-0">
+                <div className="font-medium text-sm text-text-hi truncate">{row.file.name}</div>
+                <div className="text-xs text-text-lo font-mono-num">{row.file.meta}</div>
               </div>
-              <span className={`px-3 py-1 rounded-full text-xs font-semibold ${row.statusColor}`}>
+              <span className={`px-2.5 py-1 rounded-pill text-xs font-semibold ${row.status === 'Done' ? 'text-teal bg-teal-wash' : 'text-gold bg-gold-wash'}`}>
                 {t.fileStatus[row.status]}
               </span>
             </div>
@@ -147,48 +140,46 @@ export default function Home() {
         </div>
       </section>
 
-      {/* PRICING — Floating pills */}
-      <section id="pricing" className="px-6 py-20 max-w-lg mx-auto">
-        <div className="text-center mb-12">
-          <h2 className="text-2xl font-bold text-stone-850 mb-2">{t.pricing.heading}</h2>
-          <p className="text-stone-750 text-sm">{t.pricing.sub}</p>
+      {/* PRICING */}
+      <section id="pricing" className="relative z-10 px-5 sm:px-6 py-16 sm:py-20 max-w-lg mx-auto">
+        <div className="mb-10">
+          <h2 className="font-display text-2xl font-bold text-text-hi mb-2">{t.pricing.heading}</h2>
+          <p className="text-text-lo text-sm">{t.pricing.sub}</p>
         </div>
 
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-3">
           {t.pricing.plans.map((plan, i) => (
             <div
               key={i}
-              className={`flex justify-between items-center p-6 bg-white rounded-organic border transition-all hover:shadow-lg hover:border-accent-soft ${
-                i === 1
-                  ? 'border-accent-soft bg-gradient-to-r from-accent-wash to-orange-50 relative'
-                  : 'border-stone-650/50'
+              className={`relative flex justify-between items-center p-5 rounded-card border transition-colors ${
+                i === 1 ? 'border-gold bg-gold-wash' : 'border-line bg-panel/60 hover:border-line'
               }`}
             >
               {i === 1 && (
-                <span className="absolute -top-2.5 right-5 rtl:right-auto rtl:left-5 bg-accent text-white px-2.5 py-0.5 rounded-lg text-[10px] font-bold">
+                <span className="absolute -top-2.5 right-5 rtl:right-auto rtl:left-5 bg-gold text-white px-2.5 py-0.5 rounded-lg text-[10px] font-bold">
                   {t.pricing.popular}
                 </span>
               )}
               <div>
-                <div className="font-bold text-stone-850">{plan.name}</div>
-                <div className="text-xs text-stone-750 mt-0.5">{plan.desc}</div>
+                <div className="font-display font-semibold text-text-hi">{plan.name}</div>
+                <div className="text-xs text-text-lo mt-0.5">{plan.desc}</div>
               </div>
-              <div className="text-2xl font-extrabold text-accent">{plan.price}</div>
+              <div className="font-mono-num text-xl font-bold text-gold">{plan.price}</div>
             </div>
           ))}
         </div>
       </section>
 
       {/* CTA */}
-      <section className="px-6 py-16 text-center">
-        <div className="max-w-md mx-auto bg-gradient-to-br from-accent-wash to-orange-100 rounded-organic p-10 border border-accent-soft">
-          <h2 className="text-2xl font-bold text-stone-850 mb-3">{t.cta.heading}</h2>
-          <p className="text-stone-750 text-sm mb-6">
+      <section className="relative z-10 px-5 sm:px-6 py-16 text-center">
+        <div className="max-w-md mx-auto bg-panel rounded-card p-9 sm:p-10 border border-line">
+          <h2 className="font-display text-2xl font-bold text-text-hi mb-3">{t.cta.heading}</h2>
+          <p className="text-text-lo text-sm mb-6">
             {t.cta.sub}
           </p>
           <Link
             href="/dashboard"
-            className="inline-block bg-gradient-to-br from-accent to-accent-dark text-white px-8 py-3 rounded-organic-sm font-semibold text-sm hover:shadow-xl hover:shadow-accent/30 transition-all hover:-translate-y-0.5"
+            className="inline-block bg-gradient-to-b from-gold to-gold-dim text-white px-7 py-3 rounded-pill font-bold text-sm hover:shadow-gold transition-shadow"
           >
             {t.cta.button}
           </Link>
@@ -196,13 +187,13 @@ export default function Home() {
       </section>
 
       {/* FOOTER */}
-      <footer className="text-center py-10 text-stone-750 text-sm">
-        <p className="mb-2">{t.footer.madeWith}</p>
-        <div className="flex gap-6 justify-center">
-          <Link href="#" className="hover:text-accent transition-colors">{t.footer.pricing}</Link>
-          <Link href="#" className="hover:text-accent transition-colors">{t.footer.apiDocs}</Link>
-          <Link href="#" className="hover:text-accent transition-colors">{t.footer.privacy}</Link>
-          <Link href="#" className="hover:text-accent transition-colors">{t.footer.contact}</Link>
+      <footer className="relative z-10 text-center py-10 text-text-lo text-sm px-5">
+        <p className="mb-3">{t.footer.madeWith}</p>
+        <div className="flex gap-6 justify-center flex-wrap">
+          <Link href="#" className="hover:text-gold transition-colors">{t.footer.pricing}</Link>
+          <Link href="#" className="hover:text-gold transition-colors">{t.footer.apiDocs}</Link>
+          <Link href="#" className="hover:text-gold transition-colors">{t.footer.privacy}</Link>
+          <Link href="#" className="hover:text-gold transition-colors">{t.footer.contact}</Link>
         </div>
       </footer>
     </main>

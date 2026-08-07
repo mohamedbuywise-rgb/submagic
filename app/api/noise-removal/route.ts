@@ -1,8 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { uploadInputFile, enqueueJob } from '@/lib/queue'
+import { requireUserWithCredits, deductCredits, recordJob } from '@/lib/authGuard'
 
 export async function POST(req: NextRequest) {
   try {
+    const guard = await requireUserWithCredits(req, 'credits_minutes')
+    if ('reject' in guard) return guard.reject
+
     const formData = await req.formData()
     const file = formData.get('file') as File
 
@@ -12,6 +16,9 @@ export async function POST(req: NextRequest) {
 
     const jobId = crypto.randomUUID()
     const fileUrl = await uploadInputFile(file, jobId)
+
+    await recordJob({ id: jobId, userId: guard.userId, tool: 'noise', fileName: file.name })
+    await deductCredits(guard.userId, 'credits_minutes')
 
     await enqueueJob({
       id: jobId,
