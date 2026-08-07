@@ -35,8 +35,8 @@ services:
     command: sh -c "pip install -r requirements.txt && python worker.py"
     environment:
       - REDIS_URL=redis://redis:6379
-      - SUPABASE_URL=${NEXT_PUBLIC_SUPABASE_URL}
-      - SUPABASE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_KEY=${SUPABASE_KEY}
     depends_on:
       - redis
 

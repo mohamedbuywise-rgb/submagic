@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { v4 as uuidv4 } from 'uuid'
+import { uploadInputFile, enqueueJob } from '@/lib/queue'
 
 export async function POST(req: NextRequest) {
   try {
@@ -10,15 +10,21 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'No file provided' }, { status: 400 })
     }
 
-    const jobId = uuidv4()
+    const jobId = crypto.randomUUID()
+    const fileUrl = await uploadInputFile(file, jobId)
+
+    await enqueueJob({
+      id: jobId,
+      type: 'noise_removal',
+      file_path: fileUrl,
+    })
 
     return NextResponse.json({
       success: true,
       jobId,
       message: 'Noise removal started',
-      downloadUrl: `/api/download/${jobId}`,
+      statusUrl: `/api/status/${jobId}`,
     })
-
   } catch (error) {
     console.error('Noise removal error:', error)
     return NextResponse.json(

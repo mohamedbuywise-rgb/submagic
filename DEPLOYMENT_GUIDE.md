@@ -1,4 +1,4 @@
-# 🚀 SubMagic — Deployment Guide (Step by Step)
+# 🚀 ClipGenie — Deployment Guide (Step by Step)
 
 ## PART 1: GitHub (رفع الكود)
 
@@ -9,20 +9,20 @@
 
 ### Step 2: Push Code to GitHub
 ```bash
-cd submagic
+cd clipgenie
 git init
 git add .
-git commit -m "SubMagic MVP"
+git commit -m "ClipGenie MVP"
 ```
 
 ### Step 3: Create GitHub Repo
 1. Go to https://github.com/new
-2. Name: `submagic`
+2. Name: `clipgenie`
 3. Click **Create repository**
 4. Copy the commands under "…or push an existing repository"
 5. Run them in terminal:
 ```bash
-git remote add origin https://github.com/YOUR_USERNAME/submagic.git
+git remote add origin https://github.com/YOUR_USERNAME/clipgenie.git
 git branch -M main
 git push -u origin main
 ```
@@ -38,10 +38,10 @@ git push -u origin main
 
 ### Step 2: Deploy
 1. Click **Add New Project**
-2. Find `submagic` in the list → Click **Import**
+2. Find `clipgenie` in the list → Click **Import**
 3. Framework Preset: `Next.js`
 4. Click **Deploy**
-5. Wait 2-3 minutes → You'll get a URL like `submagic.vercel.app`
+5. Wait 2-3 minutes → You'll get a URL like `clipgenie.vercel.app`
 
 ### Step 3: Add Environment Variables
 1. In Vercel Dashboard, click your project
@@ -66,7 +66,7 @@ git push -u origin main
 1. Go to https://supabase.com
 2. Sign up with GitHub
 3. Click **New Project**
-4. Name: `submagic`
+4. Name: `clipgenie`
 5. Password: (create a strong password, SAVE IT!)
 6. Region: Choose closest to your users (e.g., Frankfurt for Europe, Mumbai for India)
 7. Click **Create new project**
@@ -105,7 +105,7 @@ git push -u origin main
 ### Step 2: Get API Key
 1. Click **API Keys** (left sidebar)
 2. Click **Create API Key**
-3. Name: `submagic-production`
+3. Name: `clipgenie-production`
 4. Permission: `Sending access`
 5. Copy the key → this is `RESEND_API_KEY`
 
@@ -124,7 +124,7 @@ The Worker is a Python script that runs in the background and does the actual AI
 ### Step 2: Deploy Worker
 1. Click **New Project**
 2. Click **Deploy from GitHub repo**
-3. Select your `submagic` repo
+3. Select your `clipgenie` repo
 4. Click **Add Variables**:
    - `REDIS_URL` = `redis://default:PASSWORD@redis.railway.app:PORT` (we'll create Redis next)
    - `SUPABASE_URL` = your Supabase URL
@@ -148,35 +148,25 @@ The Worker is a Python script that runs in the background and does the actual AI
 
 ---
 
-## PART 6: Cloudflare R2 (تخزين الملفات)
+## PART 6: Supabase Storage (تخزين الملفات)
 
-### Step 1: Create Account
-1. Go to https://dash.cloudflare.com/sign-up
-2. Sign up (free)
+### Step 1: Create Bucket
+1. افتح Supabase Dashboard بتاع نفس المشروع اللي فيه الـ Database
+2. من القائمة الجانبية، دوس **Storage**
+3. دوس **Create a new bucket**
+4. الاسم: `clipgenie-uploads`
+5. فعّل **Public bucket** (عشان الفرونت يقدر يعرض/يحمّل الملفات مباشرة)
+6. دوس **Create bucket**
 
-### Step 2: Create R2 Bucket
-1. In Cloudflare Dashboard, click **R2 Object Storage** (left sidebar)
-2. Click **Create bucket**
-3. Name: `submagic-uploads`
-4. Click **Create bucket**
+### Step 2: Get Service Role Key
+1. Supabase Dashboard → **Project Settings** (أيقونة الترس) → **API**
+2. انسخ الـ `service_role secret` (مش الـ anon key — ده اللي بيديه صلاحية الرفع الكامل)
 
-### Step 3: Get API Keys
-1. Click **Manage R2 API Tokens**
-2. Click **Create API token**
-3. Name: `submagic-worker`
-4. Permissions: **Object Read & Write**
-5. Copy:
-   - Access Key ID → `R2_ACCESS_KEY_ID`
-   - Secret Access Key → `R2_SECRET_ACCESS_KEY`
-6. Go to bucket → copy the S3 API endpoint → `R2_ENDPOINT`
-
-### Step 4: Add to Worker
-In Railway Worker Variables, add:
+### Step 3: Add to Worker
+في Render/Railway Worker Variables، ضيف:
 ```
-R2_ENDPOINT=https://YOUR_ACCOUNT_ID.r2.cloudflarestorage.com
-R2_ACCESS_KEY_ID=your-access-key
-R2_SECRET_ACCESS_KEY=your-secret-key
-R2_BUCKET_NAME=submagic-uploads
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_KEY=your-service-role-key
 ```
 
 ---
@@ -204,10 +194,10 @@ R2_BUCKET_NAME=submagic-uploads
 - [ ] Environment variables set (REDIS_URL, SUPABASE_KEY)
 - [ ] Worker is running (check logs)
 
-### Cloudflare R2 (التخزين)
-- [ ] Bucket created
-- [ ] API keys generated
-- [ ] Keys added to Railway Worker
+### Supabase Storage (التخزين)
+- [ ] Bucket `clipgenie-uploads` created and set to Public
+- [ ] Service role key copied
+- [ ] `SUPABASE_URL` / `SUPABASE_KEY` added to Worker
 
 ---
 
@@ -247,9 +237,9 @@ R2_BUCKET_NAME=submagic-uploads
 | Supabase | $0 (Free tier: 500MB) |
 | Railway | $0 ($5 credit covers ~2-3 months) |
 | Resend | $0 (3,000 emails/month) |
-| Cloudflare R2 | $0 (10GB free) |
+| Supabase Storage | $0 (1GB free, included in main plan) |
 | **TOTAL** | **$0** |
 
 ---
 
-Made with ✨ by SubMagic Team
+Made with ✨ by ClipGenie Team

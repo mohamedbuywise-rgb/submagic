@@ -1,4 +1,4 @@
--- SubMagic Database Schema for Supabase
+-- ClipGenie Database Schema for Supabase
 -- Run this in Supabase SQL Editor
 
 -- 1. Users table (extends auth.users)

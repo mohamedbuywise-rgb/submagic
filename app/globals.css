@@ -23,6 +23,12 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* Arabic reads noticeably better on Noto Sans Arabic than falling back
+   through a Latin font stack, so flip the priority whenever the page is RTL. */
+[dir='rtl'] body {
+  font-family: 'Noto Sans Arabic', 'Inter', system-ui, sans-serif;
+}
+
 @keyframes float {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-8px); }

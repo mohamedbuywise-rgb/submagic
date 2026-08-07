@@ -1,17 +1,87 @@
 """
-SubMagic Worker — All CapCut Free Features + More
+ClipGenie Worker — All CapCut Free Features + More
 Processes: transcription, TTS, audio enhance, background removal, compression, noise removal, speed control
 """
 import os
 import json
 import time
 import subprocess
+import tempfile
+import requests
 from redis import Redis
 from faster_whisper import WhisperModel
 from rembg import remove
 from PIL import Image
+from supabase import create_client
 
 redis_client = Redis.from_url(os.getenv('REDIS_URL', 'redis://localhost:6379'))
+
+# Supabase Storage client (uses service_role key for full upload access)
+supabase = create_client(
+    os.getenv('SUPABASE_URL'),
+    os.getenv('SUPABASE_KEY')
+)
+BUCKET_NAME = 'clipgenie-uploads'  # لازم تعمل الـ bucket ده في Supabase Storage وتخليه Public
+
+
+def upload_to_supabase(local_path, remote_name=None, content_type=None):
+    """يرفع ملف من الديسك المحلي لـ Supabase Storage ويرجّع الـ public URL"""
+    remote_name = remote_name or f"{int(time.time())}_{os.path.basename(local_path)}"
+    with open(local_path, 'rb') as f:
+        file_bytes = f.read()
+
+    supabase.storage.from_(BUCKET_NAME).upload(
+        path=remote_name,
+        file=file_bytes,
+        file_options={
+            "content-type": content_type or "application/octet-stream",
+            "upsert": "true",
+        },
+    )
+
+    public_url = supabase.storage.from_(BUCKET_NAME).get_public_url(remote_name)
+    print(f"[Supabase Upload] {local_path} -> {public_url}")
+    return public_url
+
+
+def upload_result_files(result):
+    """يمسح على أي قيمة في نتيجة الجوب لو كانت مسار ملف موجود فعلاً على الديسك،
+    يرفعه على Supabase Storage، ويستبدل المسار المحلي بالـ public URL.
+    كده أي handler جديد هيتغطى تلقائي من غير ما نلمسه."""
+    for key, value in list(result.items()):
+        if isinstance(value, str) and os.path.isfile(value):
+            try:
+                public_url = upload_to_supabase(value)
+                result[key] = public_url
+                try:
+                    os.remove(value)  # نضف الملف المحلي بعد الرفع
+                except OSError:
+                    pass
+            except Exception as e:
+                print(f"[Upload Error] Failed to upload {value}: {e}")
+    return result
+
+
+def resolve_input_file(file_ref):
+    """جوب بيجيله file_path ممكن يبقى رابط (URL) من Supabase Storage مش مسار محلي،
+    عشان الفرونت بيرفع الملف هناك مش على الـ Worker مباشرة. الدالة دي بتنزّل
+    الملف من الرابط لملف مؤقت محلي، وترجّع المسار المحلي عشان باقي الكود يشتغل
+    زي ما هو (subprocess/ffmpeg محتاجين مسار على الديسك)."""
+    if not isinstance(file_ref, str) or not file_ref.startswith(('http://', 'https://')):
+        return file_ref  # أصلاً مسار محلي، سيبه زي ما هو
+
+    ext = os.path.splitext(file_ref.split('?')[0])[1] or '.tmp'
+    fd, local_path = tempfile.mkstemp(suffix=ext, dir='/tmp')
+    os.close(fd)
+
+    print(f"[Download] {file_ref} -> {local_path}")
+    response = requests.get(file_ref, stream=True, timeout=120)
+    response.raise_for_status()
+    with open(local_path, 'wb') as f:
+        for chunk in response.iter_content(chunk_size=8192):
+            f.write(chunk)
+
+    return local_path
 
 print("Loading AI models...")
 model = WhisperModel("tiny", device="cpu", compute_type="int8")
@@ -310,7 +380,7 @@ JOB_HANDLERS = {
 
 def main():
     print("=" * 60)
-    print("✨ SubMagic Worker — All CapCut Features + More")
+    print("✨ ClipGenie Worker — All CapCut Features + More")
     print("=" * 60)
     print("Available jobs:")
     for key in JOB_HANDLERS:
@@ -321,25 +391,30 @@ def main():
     print("=" * 60)
 
     while True:
-        job_data = redis_client.blpop('submagic:jobs', timeout=5)
+        job_data = redis_client.blpop('clipgenie:jobs', timeout=5)
         if job_data:
             _, job_json = job_data
             job = json.loads(job_json)
             job_type = job.get('type')
 
+            # لو الجوب فيه file_path ورابط (URL) من Supabase Storage، نزّله محلياً الأول
+            if job.get('file_path'):
+                job['file_path'] = resolve_input_file(job['file_path'])
+
             try:
                 handler = JOB_HANDLERS.get(job_type)
                 if handler:
                     result = handler(job)
+                    result = upload_result_files(result)  # رفع الملفات على Supabase Storage
                 else:
                     result = {'error': f'Unknown job type: {job_type}'}
 
-                redis_client.setex(f"submagic:result:{job['id']}", 3600, json.dumps(result))
+                redis_client.setex(f"clipgenie:result:{job['id']}", 3600, json.dumps(result))
                 print(f"[Done] Job {job['id']} completed successfully")
 
             except Exception as e:
                 print(f"[Error] Job {job['id']}: {e}")
-                redis_client.setex(f"submagic:result:{job['id']}", 3600, json.dumps({'error': str(e)}))
+                redis_client.setex(f"clipgenie:result:{job['id']}", 3600, json.dumps({'error': str(e)}))
 
 if __name__ == '__main__':
     main()

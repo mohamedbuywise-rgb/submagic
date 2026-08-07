@@ -1,4 +1,4 @@
-# ✨ SubMagic
+# ✨ ClipGenie
 
 **Auto Subtitles & AI Backgrounds** — One upload, infinite possibilities.
 
@@ -6,8 +6,8 @@
 
 ```bash
 # 1. Clone
-git clone https://github.com/yourname/submagic.git
-cd submagic
+git clone https://github.com/yourname/clipgenie.git
+cd clipgenie
 
 # 2. Install dependencies
 npm install
@@ -31,7 +31,7 @@ docker-compose up
 ## 📁 Project Structure
 
 ```
-submagic/
+clipgenie/
 ├── app/
 │   ├── page.tsx              # Landing Page
 │   ├── dashboard/
@@ -58,7 +58,7 @@ submagic/
 | Frontend | Next.js 14 + Tailwind CSS | Free |
 | Backend | Next.js API Routes | Free |
 | Database | Supabase (PostgreSQL) | Free tier |
-| File Storage | Cloudflare R2 | Free (10GB) |
+| File Storage | Supabase Storage | Free (1GB) |
 | Email | Resend | Free (3K/month) |
 | Queue | Redis (BullMQ) | Free (local) |
 | AI (Transcription) | faster-whisper | Free (local CPU) |
@@ -88,4 +88,4 @@ submagic/
 
 ## 📄 License
 
-MIT — built with ✨ by the SubMagic team.
+MIT — built with ✨ by the ClipGenie team.
